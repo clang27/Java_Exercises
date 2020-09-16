@@ -5,28 +5,26 @@
 
 // 414, 439, 447, 458
 
-import java.util.HashMap;
+import java.util.Timer;
 
 public class ConcurrentFizzBuzzRunner{
     public static void main(String[] args) {
         FizzBuzzSequence fbs = new FizzBuzzSequence(10000);
+        testConcurrentSpeed(fbs);
+    }
 
+    public static void testConcurrentSpeed(FizzBuzzSequence fbs) {
         Thread t1 = new Thread(new ConcurrentFizzBuzz(fbs, true, false));
         Thread t2 = new Thread(new ConcurrentFizzBuzz(fbs, false, true));
         Thread t3 = new Thread(new ConcurrentFizzBuzz(fbs, true, true));
         Thread t4 = new Thread(new ConcurrentFizzBuzz(fbs, false, false));
 
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
+        t1.start();         t2.start();         t3.start();         t4.start();
 
-        while(t1.isAlive() || t2.isAlive() || t3.isAlive() || t4.isAlive()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            t1.join(); t2.join(); t3.join(); t4.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         System.out.println(fbs.toString());
